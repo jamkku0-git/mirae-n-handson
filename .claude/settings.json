@@ -1,4 +1,10 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew test *)",
+      "Bash(npm test *)"
+    ]
+  },
   "hooks": {
     "PostToolUse": [
       {

@@ -27,7 +27,8 @@ public record ItemSearchCriteria(String keyword, String unitCode, Integer level,
     static final int MAX_PAGE = 999;
 
     private static final Pattern LEVEL_IN_RANGE = Pattern.compile("[1-5]");
-    private static final Pattern DIGITS = Pattern.compile("[0-9]+");
+    /** PHP {@code preg_match('/^[0-9]+$/')} 와 같다. {@code $} 가 끝 개행 앞에서도 맞으므로 끝 개행 하나를 허용한다(search.php:337). */
+    private static final Pattern PAGE_DIGITS = Pattern.compile("[0-9]+\\n?");
     /** PHP {@code (int)"문자열"} 이 읽는 앞부분: 공백, 부호, 숫자, 소수부, 지수부. */
     private static final Pattern PHP_NUMERIC_PREFIX = Pattern.compile(
         "^[ \\t\\n\\r\\x0B\\f]*([+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?)");
@@ -63,7 +64,7 @@ public record ItemSearchCriteria(String keyword, String unitCode, Integer level,
     }
 
     private static int parsePage(String pageRaw) {
-        if (pageRaw == null || !DIGITS.matcher(pageRaw).matches()) {
+        if (pageRaw == null || !PAGE_DIGITS.matcher(pageRaw).matches()) {
             return 1;
         }
         long page = phpIntValue(pageRaw);
